@@ -1,20 +1,1 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+import {StyleSheet, Text, View, TextInput, Button, SafeAreaView, FlatList, Modal, Image, Platform} from 'react-native';import {useState} from "react";import Todo from "./src/components/Todo";import Input from "./src/components/Input";import {StatusBar} from "expo-status-bar";export default function App() {    const [todos, setTodos] = useState([]);    const [isVisibleModal, setIsVisibleModal] = useState(false);    const addTodoHandler = (enteredText) => {        setTodos((currentTodos) =>            [...currentTodos,                {text: enteredText, id: Math.random().toString()}]);        setIsVisibleModal(false);    }    const onDelete = (id) => {        setTodos((currentTodos) => {            return currentTodos.filter((todo) => todo.id !== id);        })    };    return (        <SafeAreaView style={styles.container}>            <StatusBar style={Platform.OS !== 'ios' ? "dark" : 'dark'}/>            <View>                <Button title={'Add new TODO'} onPress={() => setIsVisibleModal(true)}/>                <Input                    addTodoHandler={addTodoHandler}                    isVisibleModal={isVisibleModal}                    setIsVisibleModal={setIsVisibleModal}                    onCancel={() => setIsVisibleModal(false)}                />                <View style={styles.todosContainer}>                    <FlatList                        alwaysBounceVertical={false}                        keyExtractor={(item, index) => item.id}                        data={todos} renderItem={({item: {text, id}}) =>                        <Todo item={text} onDelete={onDelete} id={id}/>}                    />                </View>            </View>        </SafeAreaView>    );};const styles = StyleSheet.create({    container: {        flex: 1,        paddingTop: 70,        paddingHorizontal: 16,    },    todosContainer: {        flex: 5    },});
